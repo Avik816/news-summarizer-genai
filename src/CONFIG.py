@@ -1,9 +1,9 @@
 # Paths
-RAW_TRAIN_DIR = 'dataset/train.csv'
-RAW_VAL_DIR = 'dataset/val.csv'
-RAW_TEST_DIR = 'dataset/test.csv'
+RAW_TRAIN_DIR = 'raw datasets/train.csv'
+RAW_VAL_DIR = 'raw datasets/val.csv'
+RAW_TEST_DIR = 'raw datasets/test.csv'
 RAW_FULL_DATASET_DIR = 'raw datasets/Full news dataset.csv'
-CLEANED_FULL_DATASET_DIR = 'raw datasets/Full news dataset.csv'
+CLEANED_FULL_DATASET_DIR = 'raw datasets/Cleaned news dataset.csv'
 
 TRAIN_DIR = 'data/train.csv'
 VAL_DIR = 'data/val.csv'
@@ -13,3 +13,11 @@ TEST_DIR = 'data/test.csv'
 TRAIN_SIZE = 0.80
 VAL_SIZE = 0.10
 TEST_SIZE = 0.10
+
+# Model Hyper-parameters
+MODEL_NAME = 't5-small'
+MAX_INPUT_LENGTH = 512
+MAX_TARGET_LENGTH = 128
+BATCH_SIZE = 4
+EPOCHS = 100
+LEARNING_RATE = 5e-5
