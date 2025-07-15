@@ -1,4 +1,8 @@
+import warnings
 import src
+
+
+warnings.filterwarnings('ignore')
 
 print('DOWNLOADING DATASET ...')
 src.download_dataset()
@@ -12,4 +16,4 @@ src.preprocess_dataset()
 print('MAKING DATASET FOR THE MODEL ...')
 src.make_dataset_for_model()
 
-print('MODEL TRAINING ...')
+# print('MODEL TRAINING ...')

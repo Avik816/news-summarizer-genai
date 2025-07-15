@@ -1,3 +1,5 @@
-/data/
+data/
 
-/datasets/
+raw datasets/
+
+__pycache__/
