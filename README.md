@@ -8,11 +8,3 @@ This repository contains the code and data for a news summarization model using 
 ## 🚀 Overview
 
 The goal of this project is to build a lightweight news summarizer that can run efficiently on CPU-based systems.
-
-## 📌 To-Do
-
-- [x] Data preprocessing  
-- [x] Dataset splitting  
-- [ ] Model fine-tuning  
-- [ ] Evaluation and metrics  
-- [ ] Final deployment setup  
