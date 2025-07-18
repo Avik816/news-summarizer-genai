@@ -31,13 +31,35 @@ class T5FineTuner(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         input_ids, attention_mask, labels = batch
         outputs = self(input_ids, attention_mask, labels)
-        self.log("train_loss", outputs.loss, on_step=False, on_epoch=True, prog_bar=True)
+        self.log('train_loss', outputs.loss, on_step=False, on_epoch=True, prog_bar=True)
+        
         return outputs.loss
 
     def validation_step(self, batch, batch_idx):
         input_ids, attention_mask, labels = batch
         outputs = self(input_ids, attention_mask, labels)
-        self.log("val_loss", outputs.loss, on_step=False, on_epoch=True, prog_bar=True)
+        self.log('val_loss', outputs.loss, on_step=False, on_epoch=True, prog_bar=True)
 
     def configure_optimizers(self):
-        return torch.optim.AdamW(filter(lambda p: p.requires_grad, self.parameters()), lr=self.lr)
+        optimizer = torch.optim.AdamW(
+            filter(lambda p: p.requires_grad, self.parameters()),
+            lr=self.lr
+        )
+
+        scheduler = {
+            'scheduler': torch.optim.lr_scheduler.ReduceLROnPlateau(
+                optimizer,
+                mode='min',
+                factor=0.5,
+                patience=2,
+                verbose=True
+            ),
+            'monitor': 'val_loss',
+            'interval': 'epoch',
+            'frequency': 1
+        }
+
+        return {
+            'optimizer': optimizer,
+            'lr_scheduler': scheduler
+        }
