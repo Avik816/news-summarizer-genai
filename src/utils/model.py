@@ -1,7 +1,7 @@
 import torch
 from transformers import T5ForConditionalGeneration
 import pytorch_lightning as pl
-from ..CONFIG import MODEL_NAME, LEARNING_RATE
+from ..CONFIG import MODEL_NAME, LEARNING_RATE, FACTOR, PATIENCE_ON_RLR, FREQUENCY
 
 
 class T5FineTuner(pl.LightningModule):
@@ -50,13 +50,13 @@ class T5FineTuner(pl.LightningModule):
             'scheduler': torch.optim.lr_scheduler.ReduceLROnPlateau(
                 optimizer,
                 mode='min',
-                factor=0.5,
-                patience=2,
+                factor=FACTOR,
+                patience=PATIENCE_ON_RLR,
                 verbose=True
             ),
             'monitor': 'val_loss',
             'interval': 'epoch',
-            'frequency': 1
+            'frequency': FREQUENCY
         }
 
         return {

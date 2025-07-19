@@ -1,6 +1,7 @@
 from torch.nn.utils.rnn import pad_sequence
 from ..utils.tokenizer import get_tokenizer
 
+
 def collate_fn(batch):
     tokenizer = get_tokenizer()
     
