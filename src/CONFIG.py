@@ -6,7 +6,9 @@ RAW_FULL_DATASET_DIR = 'raw datasets/Full news dataset.csv'
 CLEANED_FULL_DATASET_DIR = 'raw datasets/Cleaned news dataset.csv'
 MODEL_PATH = 'saved_model/T5_small_v1'
 TOKENIZER_PATH = 'saved_tokenizer'
+CHECKPOINT_PATH = 'saved_checkpoints/T5_small_v1'
 CSV_LOGGER_PATH = 'logs/T5_small_v1'
+LOSS_CURVE_PATH = 'plots'
 
 TRAIN_DIR = 'data/train.csv'
 VAL_DIR = 'data/val.csv'
@@ -24,3 +26,7 @@ MAX_TARGET_LENGTH = 128
 BATCH_SIZE = 4
 EPOCHS = 100
 LEARNING_RATE = 5e-5
+PATIENCE = 3
+PATIENCE_ON_RLR = 2
+FACTOR = 0.5
+FREQUENCY = 1
