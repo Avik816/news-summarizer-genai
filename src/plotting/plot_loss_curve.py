@@ -15,5 +15,5 @@ def plot_train_val_loss(history):
     mplot.tight_layout()
     
     # Saving the file
-    mplot.savefig(f'{LOSS_CURVE_PATH}/Model learning curve_loss-plot {datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}.png')
+    mplot.savefig(f"{LOSS_CURVE_PATH}/Model learning curve_loss-plot {datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}.png")
     print(f'Plot is saved at {LOSS_CURVE_PATH} !')
