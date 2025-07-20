@@ -2,6 +2,7 @@ import torch
 from transformers import T5ForConditionalGeneration
 import pytorch_lightning as pl
 from ..CONFIG import MODEL_NAME, LEARNING_RATE, FACTOR, PATIENCE_ON_RLR, FREQUENCY
+from datetime import datetime
 
 
 class T5FineTuner(pl.LightningModule):
@@ -31,14 +32,22 @@ class T5FineTuner(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         input_ids, attention_mask, labels = batch
         outputs = self(input_ids, attention_mask, labels)
-        self.log('train_loss', outputs.loss, on_step=False, on_epoch=True, prog_bar=True)
+
+        # Logging training loss
+        self.log('train_loss', outputs.loss, on_step=True, on_epoch=True, prog_bar=True)
+
+        # Logging learning rate manually
+        current_lr = self.trainer.optimizers[0].param_groups[0]['lr']
+        self.log('learning_rate', current_lr, on_step=True, on_epoch=True, prog_bar=True)
         
         return outputs.loss
 
     def validation_step(self, batch, batch_idx):
         input_ids, attention_mask, labels = batch
         outputs = self(input_ids, attention_mask, labels)
-        self.log('val_loss', outputs.loss, on_step=False, on_epoch=True, prog_bar=True)
+
+        # Logging val loss
+        self.log('val_loss', outputs.loss, on_step=True, on_epoch=True, prog_bar=True)
 
     def configure_optimizers(self):
         optimizer = torch.optim.AdamW(
