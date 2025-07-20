@@ -7,7 +7,7 @@ CLEANED_FULL_DATASET_DIR = 'raw datasets/Cleaned news dataset.csv'
 MODEL_PATH = 'saved_model/T5_small_v1'
 TOKENIZER_PATH = 'saved_tokenizer'
 CHECKPOINT_PATH = 'saved_checkpoints/T5_small_v1'
-CSV_LOGGER_PATH = 'logs/T5_small_v1'
+CSV_LOGGER_PATH = 'T5_small'
 LOSS_CURVE_PATH = 'plots'
 
 TRAIN_DIR = 'data/train.csv'
@@ -23,7 +23,7 @@ TEST_SIZE = 0.10
 MODEL_NAME = 't5-small'
 MAX_INPUT_LENGTH = 512
 MAX_TARGET_LENGTH = 128
-BATCH_SIZE = 4
+BATCH_SIZE = 16
 EPOCHS = 100
 LEARNING_RATE = 5e-5
 PATIENCE = 3
