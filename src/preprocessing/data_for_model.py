@@ -1,13 +1,20 @@
 from ..CONFIG import TRAIN_SIZE, VAL_SIZE, TEST_SIZE, CLEANED_FULL_DATASET_DIR, TRAIN_DIR, VAL_DIR, TEST_DIR
 import polars, os
+from sklearn.model_selection import train_test_split
 
 
 def make_dataset_for_model():
     dataset = polars.read_csv(CLEANED_FULL_DATASET_DIR)
 
-    train = dataset[:int(dataset.shape[0] * TRAIN_SIZE), :]
+    _, prototype_dataset = train_test_split(dataset, test_size=0.1, random_state=42)
+
+    train = prototype_dataset[:int(prototype_dataset.shape[0] * TRAIN_SIZE), :]
+    val = prototype_dataset[int(train.shape[0]):int(train.shape[0] + int(prototype_dataset.shape[0] * VAL_SIZE)), :]
+    test = prototype_dataset[int(val.shape[0]):int(val.shape[0] + int(prototype_dataset.shape[0] * TEST_SIZE)), :]
+
+    '''train = dataset[:int(dataset.shape[0] * TRAIN_SIZE), :]
     val = dataset[int(train.shape[0]):int(train.shape[0] + int(dataset.shape[0] * VAL_SIZE)), :]
-    test = dataset[int(val.shape[0]):int(val.shape[0] + int(dataset.shape[0] * TEST_SIZE)), :]
+    test = dataset[int(val.shape[0]):int(val.shape[0] + int(dataset.shape[0] * TEST_SIZE)), :]'''
     
     os.mkdir('data')
 
@@ -15,4 +22,4 @@ def make_dataset_for_model():
     val.write_csv(VAL_DIR)
     test.write_csv(TEST_DIR)
 
-    print('Dataset splitted and saved in {data}.')
+    print('Prototype Dataset splitted and saved in {data}.')
