@@ -63,11 +63,11 @@ def train_T5Small_model():
     )
 
     # Training the model
-    history = t5_small_trainer.fit(model, train_loader, val_loader)
+    t5_small_trainer.fit(model, train_loader, val_loader)
 
     # Saving the model and tokenizer
     model.model.save_pretrained(MODEL_PATH)
 
     # Plotting training vs validation loss curve
-    plot_train_val_loss(history)
+    # plot_train_val_loss()
     
