@@ -1,10 +1,11 @@
 from ..CONFIG import TRAIN_DIR, VAL_DIR, BATCH_SIZE, CHECKPOINT_PATH, EPOCHS, MODEL_PATH, CSV_LOGGER_PATH
 from ..utils.tokenizer import get_tokenizer
 from ..utils.model import T5FineTuner
-from .dataset_streamer import StreamingNewsSummaryDataset
+from .dataset_streamer import InMemoryPreTokenizedBufferShuffleDataset
 from ..utils.custom_batch_collation import collate_fn
 from torch.utils.data import DataLoader
-from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint, LearningRateMonitor, RichProgressBar
+from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint, LearningRateMonitor, TQDMProgressBar 
+#RichProgressBar
 from pytorch_lightning.loggers import CSVLogger
 import pytorch_lightning as pl
 import torch
@@ -27,13 +28,13 @@ def train_T5Small_model():
 
     # Creating the datasets for the model
     # This snippet will load the datasets dynamically and not directly in the memory, thus saving space
-    train_dataset = StreamingNewsSummaryDataset(TRAIN_DIR, tokenizer)
+    train_dataset = InMemoryPreTokenizedBufferShuffleDataset(TRAIN_DIR, tokenizer, True)
     train_loader = DataLoader(
         train_dataset, batch_size=BATCH_SIZE,
         collate_fn=lambda x: collate_fn(x, tokenizer)
     )
 
-    val_dataset = StreamingNewsSummaryDataset(VAL_DIR, tokenizer)   
+    val_dataset = InMemoryPreTokenizedBufferShuffleDataset(VAL_DIR, tokenizer, False)   
     val_loader = DataLoader(
         val_dataset, batch_size=BATCH_SIZE,
         collate_fn=lambda x: collate_fn(x, tokenizer)
@@ -42,7 +43,7 @@ def train_T5Small_model():
     # Model Callbacks
     checkpoint = ModelCheckpoint(
         monitor='val_loss',
-        save_top_k=1,
+        save_top_k=-1,                  # Saving all the checkpopints
         mode='min',
         dirpath=CHECKPOINT_PATH,
         filename="checkpoint_epoch-{epoch:02d}_val_loss-{val_loss:.6f}_lr-{learning_rate:.6f}"
@@ -50,7 +51,7 @@ def train_T5Small_model():
     early_stop = EarlyStopping(monitor='val_loss', patience=3, mode='min')
     lr_monitor = LearningRateMonitor(logging_interval='epoch')
     csv_logger = CSVLogger('logs', name=CSV_LOGGER_PATH, version='v1')
-    progress_bar = RichProgressBar(refresh_rate=1)
+    progress_bar = TQDMProgressBar(refresh_rate=1, leave=True)
 
     # Settting up the Trainer
     t5_small_trainer = pl.Trainer(
