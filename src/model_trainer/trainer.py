@@ -2,7 +2,7 @@ from ..CONFIG import TRAIN_DIR, VAL_DIR, BATCH_SIZE, CHECKPOINT_PATH, EPOCHS, MO
 from ..utils.tokenizer import get_tokenizer
 from ..utils.model import T5FineTuner
 from .dataset_streamer import InMemoryPreTokenizedBufferShuffleDataset
-# from ..utils.custom_batch_collation import collate_fn
+from ..utils.custom_batch_collation import collate_fn
 from torch.utils.data import DataLoader
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint, LearningRateMonitor, TQDMProgressBar 
 #RichProgressBar
@@ -12,29 +12,7 @@ import torch
 from datetime import datetime
 from ..plotting.plot_loss_curve import plot_train_val_loss
 from transformers import logging as hf_logging
-from torch.nn.utils.rnn import pad_sequence
-# from ..utils.tokenizer import get_tokenizer
 
-
-def collate_fn(batch, tokenizer):
-    # tokenizer = get_tokenizer()
-    
-    input_ids, target_ids = zip(*batch)
-
-    input_ids_padded = pad_sequence(
-        input_ids,
-        batch_first=True,
-        padding_value=tokenizer.pad_token_id
-    )
-    target_ids_padded = pad_sequence(
-        target_ids,
-        batch_first=True,
-        padding_value=tokenizer.pad_token_id
-    )
-    
-    attention_mask = (input_ids_padded != tokenizer.pad_token_id).long()
-
-    return input_ids_padded, attention_mask, target_ids_padded
 
 def train_T5Small_model():
     hf_logging.set_verbosity_warning()
@@ -53,15 +31,13 @@ def train_T5Small_model():
     train_dataset = InMemoryPreTokenizedBufferShuffleDataset(TRAIN_DIR, tokenizer, True)
     train_loader = DataLoader(
         train_dataset, batch_size=BATCH_SIZE,
-        collate_fn=lambda x: collate_fn(x, tokenizer),
-        num_workers=4
+        collate_fn=lambda x: collate_fn(x, tokenizer)
     )
 
     val_dataset = InMemoryPreTokenizedBufferShuffleDataset(VAL_DIR, tokenizer, False)   
     val_loader = DataLoader(
         val_dataset, batch_size=BATCH_SIZE,
-        collate_fn=lambda x: collate_fn(x, tokenizer),
-        num_workers=4
+        collate_fn=lambda x: collate_fn(x, tokenizer)
     )
 
     # Model Callbacks
