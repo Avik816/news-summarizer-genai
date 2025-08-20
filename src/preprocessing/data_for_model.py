@@ -1,20 +1,35 @@
 from ..CONFIG import TRAIN_SIZE, VAL_SIZE, TEST_SIZE, CLEANED_FULL_DATASET_DIR, TRAIN_DIR, VAL_DIR, TEST_DIR
 import polars, os
-from sklearn.model_selection import train_test_split
 
+
+def find_article_with_400words(a):
+    if len(a.split()) <= 400:
+        return True
+    else:
+        return False
 
 def make_dataset_for_model():
     dataset = polars.read_csv(CLEANED_FULL_DATASET_DIR)
 
-    _, prototype_dataset = train_test_split(dataset, test_size=0.1, random_state=42)
+    dataset = dataset.with_columns(
+        polars.col('article').
+        map_elements(
+            function=lambda a: find_article_with_400words(a),
+            return_dtype=polars.Boolean
+        ).alias('is_400')
+    )
+
+    dataset = dataset.filter(polars.col('is_400') == True).drop('is_400')
+
+    '''_, prototype_dataset = train_test_split(dataset, test_size=0.1, random_state=42)
 
     train = prototype_dataset[:int(prototype_dataset.shape[0] * TRAIN_SIZE), :]
     val = prototype_dataset[int(train.shape[0]):int(train.shape[0] + int(prototype_dataset.shape[0] * VAL_SIZE)), :]
-    test = prototype_dataset[int(val.shape[0]):int(val.shape[0] + int(prototype_dataset.shape[0] * TEST_SIZE)), :]
+    test = prototype_dataset[int(val.shape[0]):int(val.shape[0] + int(prototype_dataset.shape[0] * TEST_SIZE)), :]'''
 
-    '''train = dataset[:int(dataset.shape[0] * TRAIN_SIZE), :]
+    train = dataset[:int(dataset.shape[0] * TRAIN_SIZE), :]
     val = dataset[int(train.shape[0]):int(train.shape[0] + int(dataset.shape[0] * VAL_SIZE)), :]
-    test = dataset[int(val.shape[0]):int(val.shape[0] + int(dataset.shape[0] * TEST_SIZE)), :]'''
+    test = dataset[int(val.shape[0]):int(val.shape[0] + int(dataset.shape[0] * TEST_SIZE)), :]
     
     os.mkdir('data')
 
